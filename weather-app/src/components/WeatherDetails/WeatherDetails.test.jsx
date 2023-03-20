@@ -1,8 +1,7 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import React from 'react'
-import WeatherDetails from './WeatherDetails'
 import { render } from '@testing-library/react'
-import '@testing-library/jest-dom/extend-expect'
+import WeatherDetails from './WeatherDetails'
 
 test("WeatherDetails render", async () => {
     const { findByText } = render ( <WeatherDetails humidity={10} wind={20} /> )
