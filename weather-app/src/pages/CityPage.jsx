@@ -1,5 +1,6 @@
 import React from 'react'
 import Grid from '@material-ui/core/Grid'
+import AppFrame from './../components/AppFrame'
 import CityInfo from './../components/CityInfo'
 import Weather from './../components/Weather'
 import WeatherDetails from './../components/WeatherDetails'
@@ -59,18 +60,19 @@ const CityPage = () => {
     const data = dataExample
     const forecastItemList = forecastItemListExample
   return (
+        <AppFrame>
         <Grid container
-            justify="space-around"
+            justifyContent="space-around"
             direction="column"
             spacing={2}>
             <Grid item container 
                 xs={12} 
-                justify="center"
+                justifyContent="center"
                 alignItems="flex-end">
                 <CityInfo city={city} country={country} />
             </Grid>
             <Grid container item xs={12}
-                justify="center">
+                justifyContent="center">
                 <Weather state={state} temperature={temperature} />
                 <WeatherDetails humidity={humidity} 
                     wind={wind} />
@@ -82,6 +84,7 @@ const CityPage = () => {
                 <Forecast forecastItemList={forecastItemList} />
             </Grid>
         </Grid>        
+        </AppFrame>
   )
 }
 

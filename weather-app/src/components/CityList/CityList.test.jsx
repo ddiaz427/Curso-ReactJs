@@ -1,18 +1,18 @@
 /* eslint-disable testing-library/prefer-screen-queries */
 import React from 'react'
-import { fireEvent, render } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import CityList from './CityList'
 
 const cities = [
-    {city: 'Ibague', country: 'Colombia'}, 
-    {city: 'Bogota', country: 'Colombia'}, 
-    {city: 'Medellin', country: 'Colombia'}, 
-    {city: 'Montevideo', country: 'Uruguay'}
+    {city: 'Ibague', country: 'Colombia', countryCode: 'CO'}, 
+    {city: 'Bogota', country: 'Colombia', countryCode: 'CO'}, 
+    {city: 'Medellin', country: 'Colombia', countryCode: 'CO'}, 
+    {city: 'Montevideo', country: 'Uruguay', countryCode: 'UY'}
 ]
 
 test("CityList renders", async () => {
 
-    const { findAllByRole } = render(<CityList cities={cities} />)
+    const { findAllByRole } = render(<CityList cities={cities} onClickCity={() => {}} />)
 
     const items = await findAllByRole("button")
 

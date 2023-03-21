@@ -1,27 +1,30 @@
 import React from 'react'
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import Paper from '@material-ui/core/Paper'
+import AppFrame from './../components/AppFrame'
 import CityList from './../components/CityList'
 
   const cities = [
-      {city: 'Ibague', country: 'Colombia'}, 
-      {city: 'Bogota', country: 'Colombia'}, 
-      {city: 'Medellin', country: 'Colombia'}, 
-      {city: 'Montevideo', country: 'Uruguay'}
+      {city: 'Ibague', country: 'Colombia', countryCode: 'CO'}, 
+      {city: 'Bogota', country: 'Colombia', countryCode: 'CO'}, 
+      {city: 'Medellin', country: 'Colombia', countryCode: 'CO'}, 
+      {city: 'Montevideo', country: 'Uruguay', countryCode: 'UY'}
   ]
 
 const MainPage = () => {
-    const history = useHistory()
+  const history = useNavigate()
   const onClickHandler = () => {
-    history.push("/city")
+    history("/city")
   }
 
   return (
-    <div>
-            <h2>Lista de ciudades</h2>
+        <AppFrame>
+            <Paper elevation={3}>
             <CityList 
                 cities={cities} 
                 onClickCity={onClickHandler} />
-    </div>
+            </Paper>
+        </AppFrame>
   )
 }
 
