@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import axios from 'axios'
 import convertUnits from "convert-units";
+import Alert from '@material-ui/lab/Alert'
 import Grid from '@material-ui/core/Grid'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
@@ -29,14 +30,9 @@ const renderCityAndCountry = eventOnClickCity => (cityAndCountry, weather) => {
         <Grid item
            md={3}
           xs={12}>
-          {
-            weather ? 
-            (<Weather 
-              temperature={weather.temperature} 
-              state={weather.state} />) 
-            :
-            ("No hay datos")
-          }
+            <Weather 
+              temperature={weather && weather.temperature} 
+              state={weather && weather.state} />
         </Grid>
       </Grid>
     </ListItem>
@@ -44,7 +40,8 @@ const renderCityAndCountry = eventOnClickCity => (cityAndCountry, weather) => {
 }
 
 const CityList = ({ cities, onClickCity }) => {
-    const [allWeather, setAllWeather] = useState({})
+  const [allWeather, setAllWeather] = useState({})
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const setWeather = (city, country, countryCode) => {
@@ -61,6 +58,18 @@ const CityList = ({ cities, onClickCity }) => {
 
                 setAllWeather(allWeather => ({ ...allWeather, [propName]: propValue }))
       })
+      .catch( error => {
+        if(error.response){
+          // const { data, status } = error.response
+          setError("Ha ocurrido un error en el servidor de clima")
+        }
+        else if(error.request){
+          setError("Verifique su conexión a internet")
+        }
+        else{
+          setError("Error al cargar los datos")
+        }
+      })
     }
 
     cities.forEach(({ city, country, countryCode }) => {
@@ -72,12 +81,17 @@ const CityList = ({ cities, onClickCity }) => {
 
   // const weather = {temperature: 25, state: "sunny" }
   return (
+      <div>
+        {
+          error && <Alert severity='"error' onClose={() => setError(null)}>{ error }</Alert>
+        }
         <List>
         {
-                cities.map(cityAndCountry => renderCityAndCountry(onClickCity)(cityAndCountry, 
-                    allWeather[`${cityAndCountry.city}-${cityAndCountry.country}`]))
+            cities.map(cityAndCountry => renderCityAndCountry(onClickCity)(cityAndCountry, 
+                allWeather[`${cityAndCountry.city}-${cityAndCountry.country}`]))
         }
         </List>
+      </div>
   )
 }
 
