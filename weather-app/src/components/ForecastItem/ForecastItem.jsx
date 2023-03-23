@@ -6,6 +6,7 @@ import { IconContext } from 'react-icons'
 import IconState, { validValues } from './../IconState'
 
 const ForecastItem = ({ weekDay, hour, state, temperature }) => {
+    
     return (
         <Grid container
             direction="column"

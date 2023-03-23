@@ -13,8 +13,8 @@ import CityList from './../components/CityList'
 
 const MainPage = () => {
   const history = useNavigate()
-  const onClickHandler = () => {
-    history("/city")
+  const onClickHandler = (city, countryCode) => {
+    history(`/city/${countryCode}/${city}`)
   }
 
   return (
