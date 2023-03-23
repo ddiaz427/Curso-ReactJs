@@ -8,15 +8,16 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import CityInfo from './../CityInfo'
 import Weather from './../Weather'
+const getCityCode = (city, countryCode) => `${city}-${countryCode}`
 
 const renderCityAndCountry = eventOnClickCity => (cityAndCountry, weather) => {
-  const { city, country } = cityAndCountry
+    const { city, countryCode, country } = cityAndCountry
   // const { temperature, state } = weather
 
   return (
         <ListItem
             button
-            key={city} 
+            key={getCityCode(city, countryCode)} 
             onClick={eventOnClickCity} >
       <Grid container
         justifyContent='center'
@@ -44,23 +45,21 @@ const CityList = ({ cities, onClickCity }) => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    const setWeather = (city, country, countryCode) => {
+    const setWeather = async (city, countryCode) => {
       const apiKey = '5ee62565b41efd89a6ef46933847542c'
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${city},${countryCode}&appid=${apiKey}`
-      axios
-      .get(url)
-      .then(response => {
+      
+      try {       
+        const response = await axios.get(url)
         const { data } = response
         const temperature = Number(convertUnits(data.main.temp).from("K").to("C").toFixed(0))
         const state = data.weather[0].main.toLowerCase()
-        const propName = `${city}-${country}`
+        const propName = getCityCode(city, countryCode)
         const propValue = { temperature, state }
+        setAllWeather(allWeather => ({ ...allWeather, [propName]: propValue }))                
 
-                setAllWeather(allWeather => ({ ...allWeather, [propName]: propValue }))
-      })
-      .catch( error => {
+      } catch (error) {
         if(error.response){
-          // const { data, status } = error.response
           setError("Ha ocurrido un error en el servidor de clima")
         }
         else if(error.request){
@@ -68,27 +67,26 @@ const CityList = ({ cities, onClickCity }) => {
         }
         else{
           setError("Error al cargar los datos")
-        }
-      })
+        }        
+      }
     }
 
-    cities.forEach(({ city, country, countryCode }) => {
-      setWeather(city, country, countryCode)
+        cities.forEach(({ city, countryCode }) => {
+            setWeather(city, countryCode)
     });
 
   }, [cities])
   
 
-  // const weather = {temperature: 25, state: "sunny" }
   return (
       <div>
         {
-          error && <Alert severity='"error' onClose={() => setError(null)}>{ error }</Alert>
+                error && <Alert onClose={() => setError(null)} severity="error">{error}</Alert>
         }
         <List>
         {
             cities.map(cityAndCountry => renderCityAndCountry(onClickCity)(cityAndCountry, 
-                allWeather[`${cityAndCountry.city}-${cityAndCountry.country}`]))
+                        allWeather[getCityCode(cityAndCountry.city, cityAndCountry.countryCode)]))
         }
         </List>
       </div>
@@ -101,8 +99,8 @@ CityList.propTypes = {
         city: PropTypes.string.isRequired,
         country: PropTypes.string.isRequired,
         countryCode: PropTypes.string.isRequired,
-      }).isRequired
-    ),
+        })
+    ).isRequired,
     onClickCity: PropTypes.func.isRequired,
 }
 

@@ -6,8 +6,8 @@ export default {
     component: WelcomeScreen
 }
 
-export const WelcomeScreenExample = () => {
+export const WelcomeScreenExample = () => (
     <WelcomeScreen>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi, veniam eius mollitia tenetur, commodi possimus recusandae ullam fuga sapiente, asperiores vero officiis amet dolorum qui eveniet? Dolorum, repellat? Tempore, est?
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa totam autem reprehenderit harum modi velit illo sequi magnam quasi veniam quod, aut ducimus vel ratione omnis. Asperiores consequatur nemo ea.
     </WelcomeScreen>
-}
+)

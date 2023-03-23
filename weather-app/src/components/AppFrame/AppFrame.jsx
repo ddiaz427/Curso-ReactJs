@@ -9,6 +9,7 @@ import { Link as LinkRouter } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography'
 import Toolbar from '@material-ui/core/Toolbar'
 import { WiDaySunny } from 'react-icons/wi'
+import ErrorBoundary from './../../generic/ErrorBoundary'
 
 const AppFrame = ({ children }) => {
     return (
