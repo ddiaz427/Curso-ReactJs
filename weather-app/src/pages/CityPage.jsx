@@ -1,77 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import axios from "axios";
-import convertUnits from "convert-units";
+import React from 'react'
 import Grid from '@material-ui/core/Grid'
-import moment from "moment";
-import 'moment/locale/es'
+import LinearProgress from '@material-ui/core/LinearProgress'
 import AppFrame from './../components/AppFrame'
 import CityInfo from './../components/CityInfo'
-import { useParams } from "react-router-dom";
 import Weather from './../components/Weather'
 import WeatherDetails from './../components/WeatherDetails'
 import ForecastChart from './../components/ForecastChart'
 import Forecast from './../components/Forecast'
+import useCityPage from '../hooks/useCityPage'
+import useCityList from '../hooks/useCityList'
+import { getCityCode } from '../utils/utils'
+import { getCountryNameByCountryCode } from '../utils/serviceCities'
 
 const CityPage = () => {
-    const [data, setData] = useState(null)
-    const [forecastItemList, setForecastItemList] = useState(null)
-    const { city, countryCode } = useParams()
 
-    useEffect(() => {
+    const { city, countryCode, chartData, forecastItemList } = useCityPage()
 
-        const getForecast = async () => {
-            const apiKey = '5ee62565b41efd89a6ef46933847542c'
-            const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city},${countryCode}&appid=${apiKey}`
-            try {
-                const { data } = await axios.get(url)
+    const { allWeather } = useCityList([{ city, countryCode }])
 
-                const daysAhead = [0, 1, 2, 3, 4, 5]
-                const days = daysAhead.map(d => moment().add(d, 'd'))
-                const toCelsius = (temp) => convertUnits(temp).from('K').to('C').toFixed(0)
-                const dataAux = days.map(day => {
-                    const tempObjArray = data.list.filter(item => {
-                        const dayOfYear = moment.unix(item.dt).dayOfYear()
-                        return dayOfYear === day.dayOfYear()
+    const weather = allWeather[getCityCode(city, countryCode)]
 
-                    })
-                    const temps = tempObjArray.map(item => item.main.temp)
-                    
 
-                    return ({
-                        dayHour: day.format('ddd'),
-                        min: Number(toCelsius(Math.min(...temps))),
-                        max: Number(toCelsius(Math.max(...temps)))
-                    })
-                })
-
-                setData(dataAux);
-
-                const interval = [4, 8, 12, 16, 20, 24]
-                const forecastItemListAux = data.list
-                .filter((item, index) => interval.includes(index))
-                .map(item => {
-                    return ({
-                        hour: moment.unix(item.dt).hour(),
-                        weekDay: moment.unix(item.dt).format('dddd'),
-                        state: item.weather[0].main.toLowerCase(),
-                        temperature: Number(toCelsius(item.main.temp))
-                    })
-                })
-                setForecastItemList(forecastItemListAux);
-
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        getForecast()
-    }, [city,countryCode])
-    
-
-    const country = "Colombia"
-    const state = "clouds"
-    const temperature = 20
-    const humidity = 80
-    const wind = 5
+    const country = countryCode && getCountryNameByCountryCode(countryCode)
+    const state = weather && weather.state
+    const temperature = weather && weather.temperature
+    const humidity = weather && weather.humidity
+    const wind = weather && weather.wind
   return (
         <AppFrame>
         <Grid container
@@ -87,12 +41,20 @@ const CityPage = () => {
             <Grid container item xs={12}
                 justifyContent="center">
                 <Weather state={state} temperature={temperature} />
-                <WeatherDetails humidity={humidity} 
+                {
+                    humidity && wind &&
+                    <WeatherDetails humidity={humidity} 
                     wind={wind} />
+                }
             </Grid>
             <Grid item>
                 {
-                    data && <ForecastChart data={data} />
+                        !chartData && !forecastItemList && <LinearProgress />
+                    }
+                </Grid>
+                <Grid item>
+                    {
+                        chartData && <ForecastChart data={chartData} />
                 }
             </Grid>
             <Grid item>
