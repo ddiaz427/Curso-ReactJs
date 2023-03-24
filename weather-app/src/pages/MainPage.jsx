@@ -6,9 +6,9 @@ import CityList from './../components/CityList'
 import { getCities } from '../utils/serviceCities'
 
 
-const MainPage = () => {
+const MainPage = ({ onSetAllWeather, allWeather }) => {
   const history = useNavigate()
-  const onClickHandler = (city, countryCode) => {
+  const onClickHandler = (city, countryCode,) => {
     history(`/city/${countryCode}/${city}`)
   }
 
@@ -16,6 +16,8 @@ const MainPage = () => {
         <AppFrame>
             <Paper elevation={3}>
             <CityList 
+                allWeather={allWeather}
+                onSetAllWeather={onSetAllWeather}
                 cities={getCities()} 
                 onClickCity={onClickHandler} />
             </Paper>
