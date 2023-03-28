@@ -1,6 +1,5 @@
-import moment from "moment";
-import 'moment/locale/es'
-import { toCelsius } from '../../utils/utils';
+import { toCelsius } from './../utils'
+import moment from 'moment'
 
 const getChartData = (data) => {
     const daysAhead = [0, 1, 2, 3, 4, 5]
@@ -9,8 +8,10 @@ const getChartData = (data) => {
         const tempObjArray = data.list.filter(item => {
             const dayOfYear = moment.unix(item.dt).dayOfYear()
             return dayOfYear === day.dayOfYear()
-
         })
+        console.log("day.dayOfYear()", day.dayOfYear())
+        console.log("tempObjArray", tempObjArray)
+
         const temps = tempObjArray.map(item => item.main.temp)
         
 

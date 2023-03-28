@@ -5,19 +5,17 @@ import AppFrame from './../components/AppFrame'
 import CityList from './../components/CityList'
 import { getCities } from '../utils/serviceCities'
 
+const MainPage = () => {
+    const navigate = useNavigate()
 
-const MainPage = ({ onSetAllWeather, allWeather }) => {
-  const history = useNavigate()
-  const onClickHandler = (city, countryCode,) => {
-    history(`/city/${countryCode}/${city}`)
-  }
+    const onClickHandler = React.useCallback((city, countryCode) => {
+        navigate(`/city/${countryCode}/${city}`)
+    }, [navigate])
 
   return (
         <AppFrame>
             <Paper elevation={3}>
             <CityList 
-                allWeather={allWeather}
-                onSetAllWeather={onSetAllWeather}
                 cities={getCities()} 
                 onClickCity={onClickHandler} />
             </Paper>
